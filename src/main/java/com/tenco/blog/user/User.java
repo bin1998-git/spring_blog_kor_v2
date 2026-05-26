@@ -1,5 +1,6 @@
 package com.tenco.blog.user;
 
+import com.tenco.blog._core.errors.Exception400;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -70,10 +71,16 @@ public class User {
     @ColumnDefault("'LOCAL'") // 어노테이션으로 디폴트값 선언 방법 ( 문자열 일 경우 ' ' 반드시 사용)
     private OAuthProvider oAuthProvider;
 
+    // 보유 포인트
+    @ColumnDefault("0") // 테이블 기준 기본값 설정
+    private Integer point = 0;
+
     @Builder
     public User(Integer id, String username, String password,
                 String email, Timestamp createdAt,
-                String profileImage, OAuthProvider oAuthProvider, List<UserRole> roles) {
+                String profileImage, OAuthProvider oAuthProvider,
+                List<UserRole> roles,
+                Integer point) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -90,6 +97,9 @@ public class User {
         if(this.roles.isEmpty()) {
             this.roles.add(UserRole.builder().role(Role.USER).build());
         }
+
+        // point 가 null 이면 기본값 0으로 설정
+        this.point = (point != null) ? point : 0;
     }
 
     // 편의 기능 추가 - 회원 정보 수정
@@ -158,6 +168,25 @@ public class User {
     public boolean isLocal() {
         // true -> 이메일 가입자를 의미 함
         return this.oAuthProvider == OAuthProvider.LOCAL;
+    }
+
+    // 포인트 관련 편의 메서드 추가
+    public void deductPoint(Integer amount) {
+        if (amount == null || amount <= 0) {
+            throw new Exception400("차감할 포인트는 0보다 커야합니다");
+        }
+        if (this.point < amount) {
+            throw new Exception400("포인트가 부족 합니다. 현재 포인트 : " + this.point);
+        }
+        this.point -= amount;
+
+    }
+
+    public void chargePoint(Integer amount) {
+        if (amount == null || amount <= 0) {
+            throw new Exception400("충전할 포인트는 0보다 커야합니다");
+        }
+        this.point += amount;
     }
 
 }

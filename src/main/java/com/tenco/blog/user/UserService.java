@@ -324,6 +324,18 @@ public class UserService {
         // 4. 컨트롤러로 User 반환
         return userEntity;
     }
+
+    // 수정
+    @Transactional
+    public User 포인트충전(Integer id, Integer amount) {
+        // id값으로 db에 User정보 조회
+      User userEntity = userRepository.findById(id).orElseThrow(() ->
+                new Exception404("사용자를 찾을수 없습니다"));
+
+      userEntity.chargePoint(amount);
+      // Controller 에 User를 반환하기 위해서 save 호출(신규 저장, 수정 같이 동작 됨)
+      return userRepository.save(userEntity);
+    }
 }
 
 
