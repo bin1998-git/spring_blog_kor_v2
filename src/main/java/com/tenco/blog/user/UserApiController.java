@@ -59,6 +59,7 @@ public class UserApiController {
         }
     }
 
+    // TODO - 추후 삭제예정
     // 포인트 충전 API 설계 (JSON 형식으로 값이 들어 옴)
     @PostMapping("/api/point/charge")
     public ResponseEntity<?> chargePoint(@RequestBody UserRequest.PointChargeDTO reqDTO,

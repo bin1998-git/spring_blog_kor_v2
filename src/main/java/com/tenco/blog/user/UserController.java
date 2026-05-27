@@ -33,6 +33,15 @@ public class UserController {
 
     private final UserService userService;
 
+
+    // 포인트 충전 화면
+    @GetMapping("/user/point/charge")
+    public String chargePointPage(Model model, HttpSession session) {
+        User sessionUser = (User)session.getAttribute(Define.SESSION_USER);
+        model.addAttribute("user", sessionUser);
+        return "user/charge-point";
+    }
+
     // 1. 동의 항목 승인 이후 카카오 인가 서버에서 인가 코드가 리다이렉트 됨.
     @GetMapping("/kakao-redirect")
     public String kakaoCallback(@RequestParam(name = "code") String code, HttpSession session) {
