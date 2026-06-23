@@ -145,6 +145,21 @@
                 }
 
                 // 3단계 --> 우리서버에 요청 (검증)
+                const completeRes = await fetch('/api/payment/complete',{
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json; charset=UTF-8;'},
+                    body: JSON.stringify({paymentId: payment.paymentId})
+
+                });
+
+                if(!completeRes.ok) {
+                    alert("결제 검증 및 포인트 충전에 실패 했습니다");
+                    return;
+                }
+
+               const result = await completeRes.json();
+               alert("충전이 완료되었습니다.\n충전된 금액:" + result.amount);
+               location.href = "/user/detail";
 
 
             } catch(error) {
